@@ -1,12 +1,9 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
-  BatchWriteCommand,
-  DynamoDBDocumentClient,
-  PutCommand,
+  DynamoDBDocumentClient
 } from '@aws-sdk/lib-dynamodb';
-import { Resource } from 'sst';
-import { locationsWithAssets } from '../../../db';
 import { success } from 'core/helpers/lambda';
+import { locationsWithAssets } from '../../../db';
 
 const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
