@@ -24,10 +24,9 @@ export default $config({
         'packages/functions/assets/getById.handler'
       )
       .route(
-        'POST /assets',
+        'POST /locations',
         {
-          architecture: 'arm64',
-          handler: 'packages/functions/assets/insertAll.handler',
+          handler: 'packages/functions/locations/generate.handler',
           link: [table]
         }
       );

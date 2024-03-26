@@ -12,7 +12,8 @@
     "@types/aws-lambda": "^8.10.136",
     "aws-lambda": "^1.0.7",
     "core": "workspace:*",
-    "sst": "ion"
+    "sst": "ion",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/bun": "latest"

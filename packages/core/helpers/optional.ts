@@ -19,13 +19,13 @@ export class Optional<T> {
   getValue(): T {
     if (typeof this.value === 'undefined' || this.value === null) {
       throw new Error(
-        'You are getting `undefined` or `null` value. This error is to prevent unwanted other errors due to `undefined` and `null`. To skip this error and use the value with your own purpose, use method `getDangerousValue`, it will skip the check. Also, you can use method `hasValue` to check if there is a value or not.'
+        'You are getting `undefined` or `null` value. This error is to prevent unwanted other errors due to `undefined` and `null`. To skip this error and use the value with your own purpose, use method `getValueDangerously`, it will skip the check. Also, you can use method `hasValue` to check if there is a value or not.'
       );
     }
     return this.value;
   }
 
-  getDangerousValue(): T {
+  getValueDangerously(): T {
     return this.value;
   }
 
