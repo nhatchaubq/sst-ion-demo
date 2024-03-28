@@ -579,7 +579,7 @@ export const locationsWithAssets: {[key: string]: object[]} = {
       status: 'Active',
     },
   ],
-  undefined: [
+  'undefined': [
     {
       id: 3,
       name: 'Software License - Adobe Creative Suite',

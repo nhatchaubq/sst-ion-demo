@@ -29,13 +29,13 @@ export class Optional<T> {
     return this.value;
   }
 
-  when({
+  when<K, Z>({
     hasValue,
     hasNoValue,
   }: {
-    hasValue: (_: T) => unknown;
-    hasNoValue: unknown;
-  }) {
+    hasValue: (_: T) => K;
+    hasNoValue: Z;
+  }): K | Z {
     if (typeof this.value === 'undefined' || this.value === null) {
       return hasNoValue;
     }

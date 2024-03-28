@@ -1,8 +1,8 @@
-import { error } from 'core/helpers/lambda';
-import type { LambdaHandler } from 'core/types/lambda';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { error, success } from 'core/helpers/lambda';
+import type { LambdaHandler } from 'core/types';
 import { ZodError, z } from 'zod';
-import { assets } from '../../../db';
-import { optional } from 'core/helpers/optional';
 
 const PathParamsSchema = z.object({
   assetId: z.coerce.number(),
@@ -10,16 +10,23 @@ const PathParamsSchema = z.object({
 
 type PathParams = z.infer<typeof PathParamsSchema>;
 
-export const handler: LambdaHandler<PathParams, undefined> = (event) => {
+const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+
+export const handler: LambdaHandler<PathParams, undefined> = async (event) => {
   try {
     const { assetId } = PathParamsSchema.parse(event.pathParameters);
-    return optional(assets.find((asset) => asset.id === assetId)).when({
-      hasValue: (value) => value,
-      hasNoValue: error('Not found!'),
-    });
+    // const result = await client.send(new GetCommand({
+    //   TableName: Resource.AssetsManagementProjectTable.name,
+    //   Key: {
+    //     primaryKey: assetId,
+    //     subKey:
+    //   }
+    // }))
+    return success(event);
   } catch (e) {
     if (e instanceof ZodError) {
       return error(e.issues[0].message);
     }
+    return error('Some errors happened.')
   }
 };
