@@ -3,16 +3,28 @@ import {
   Link,
   Outlet,
   createRootRouteWithContext,
+  useRouter,
+  useRouterState,
 } from '@tanstack/react-router';
+import { AuthContext } from '../hooks/auth';
 
 type RootRouteContext = {
   query: QueryClient;
+  auth: AuthContext;
 };
 
 export const Route = createRootRouteWithContext<RootRouteContext>()({
-  component: () => (
+  component: Root,
+});
+
+function Root() {
+  const router = useRouterState();
+  if (router.location.pathname === '/login') {
+    return <Outlet />;
+  }
+  return (
     <>
-      <nav className='flex p-5 gap-3'>
+      <nav className='flex p-5 gap-3 justify-center items-center'>
         <Link to='/' className='min-w-16 text-center [&.active]:font-bold'>
           Home
         </Link>
@@ -31,9 +43,9 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
         </Link>
       </nav>
       <hr />
-      <div className='p-5'>
+      <main className='p-5'>
         <Outlet />
-      </div>
+      </main>
     </>
-  ),
-});
+  );
+}

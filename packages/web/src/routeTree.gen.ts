@@ -13,13 +13,16 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as LoginImport } from './routes/login_'
 import { Route as LocationsImport } from './routes/locations'
+import { Route as AuthenticatedImport } from './routes/_authenticated'
+import { Route as IndexImport } from './routes/index'
+import { Route as AuthenticatedProtectedImport } from './routes/_authenticated/protected'
 
 // Create Virtual Routes
 
 const AssetsLazyImport = createFileRoute('/assets')()
 const AboutLazyImport = createFileRoute('/about')()
-const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
 
@@ -33,26 +36,49 @@ const AboutLazyRoute = AboutLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
 
+const LoginRoute = LoginImport.update({
+  path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const LocationsRoute = LocationsImport.update({
   path: '/locations',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/locations.lazy').then((d) => d.Route))
 
-const IndexLazyRoute = IndexLazyImport.update({
+const AuthenticatedRoute = AuthenticatedImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+} as any)
+
+const AuthenticatedProtectedRoute = AuthenticatedProtectedImport.update({
+  path: '/protected',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      preLoaderRoute: typeof IndexLazyImport
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/_authenticated': {
+      preLoaderRoute: typeof AuthenticatedImport
       parentRoute: typeof rootRoute
     }
     '/locations': {
       preLoaderRoute: typeof LocationsImport
+      parentRoute: typeof rootRoute
+    }
+    '/login': {
+      preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
     '/about': {
@@ -63,14 +89,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AssetsLazyImport
       parentRoute: typeof rootRoute
     }
+    '/_authenticated/protected': {
+      preLoaderRoute: typeof AuthenticatedProtectedImport
+      parentRoute: typeof AuthenticatedImport
+    }
   }
 }
 
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  IndexLazyRoute,
+  IndexRoute,
+  AuthenticatedRoute.addChildren([AuthenticatedProtectedRoute]),
   LocationsRoute,
+  LoginRoute,
   AboutLazyRoute,
   AssetsLazyRoute,
 ])
